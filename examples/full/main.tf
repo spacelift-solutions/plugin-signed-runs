@@ -19,9 +19,9 @@ provider "github" {
 module "plugin_signed_runs" {
   source = "spacelift.io/spacelift-solutions/plugin-signed-runs/spacelift"
 
-  spacelift_api_endpoint = "https://{your_account}.app.spacelift.io"
-  spacelift_api_key_id   = "{your_spacelift_api_key_id}"
-  spacelift_api_key_secret = "{your_spacelift_api_key_secret}" # WARNING Sensitive
+  spacelift_api_endpoint         = "https://{your_account}.app.spacelift.io"
+  spacelift_api_key_id           = "{your_spacelift_api_key_id}"
+  spacelift_api_key_secret       = "{your_spacelift_api_key_secret}"                # WARNING Sensitive
   spacelift_run_signature_secret = "my-super-awesome-secret-that-no-one-will-guess" # WARNING Sensitive
 
   access = {
