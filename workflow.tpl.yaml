@@ -1,0 +1,44 @@
+name: "Trigger Spacelift Signed Run: ${PATH}"
+
+on:
+  push:
+    paths:
+      - "${PATH}"
+
+env:
+  SPACELIFT_API_KEY_ENDPOINT: $${{ secrets.SPACELIFT_API_KEY_ENDPOINT }}
+  SPACELIFT_API_KEY_ID: $${{ secrets.SPACELIFT_API_KEY_ID }}
+  SPACELIFT_API_KEY_SECRET: $${{ secrets.SPACELIFT_API_KEY_SECRET }}
+
+jobs:
+  Trigger-Spacelift-Signed-Run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install spacectl
+        uses: spacelift-io/setup-spacectl@v1
+      - name: Build JWT claim set
+        run: |
+          JWT_CLAIM_SET=$(jq -cn \
+            --argjson iat $(date +%s) \
+            --argjson exp $(date +%s -d '+1 hour') \
+            --arg sub "$GITHUB_SHA" \
+            --arg spacelift_stack "${STACK_ID}" \
+            '{"iss": "GitHub Actions", "iat": $iat, "exp": $exp, "sub": $sub, "spacelift_stack": $spacelift_stack}' \
+          )
+          echo "JWT_CLAIM_SET=$JWT_CLAIM_SET" >> $GITHUB_ENV
+      - name: Generate JWT token
+        id: jwtGenerator
+        uses: morzzz007/github-actions-jwt-generator@1.0.1
+        with:
+          secret: $${{ secrets.SPACELIFT_RUN_SIGNATURE_SECRET }}
+          payload: $${{ env.JWT_CLAIM_SET }}
+      - name: Trigger signed run
+        run: |
+          STACK_BRANCH=$(spacectl stack show --id ${STACK_ID} --output json | jq -r '.branch')
+          if [[ "$GITHUB_REF_NAME" == "$STACK_BRANCH" ]]; then
+              # Trigger a tracked run
+              spacectl stack deploy --id ${STACK_ID} --run-metadata $${{ steps.jwtGenerator.outputs.token }} --sha $GITHUB_SHA
+          else
+              # Trigger a proposed run
+              spacectl stack preview --id ${STACK_ID} --run-metadata $${{ steps.jwtGenerator.outputs.token }} --sha $GITHUB_SHA
+          fi

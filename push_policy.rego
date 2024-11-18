@@ -1,0 +1,2 @@
+package spacelift
+ignore { true }

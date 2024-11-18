@@ -1,0 +1,28 @@
+name: QA
+on:
+  - pull_request
+permissions:
+  contents: write
+jobs:
+  fmt-and-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: OpenTofu - Setup Tofu
+        uses: opentofu/setup-opentofu@v1.0.4
+
+      - name: OpenTofu - Ensure fmt has ran
+        run: tofu fmt --recursive
+
+      - name: Run TFSort
+        run: |
+          ./.github/binaries/tfsort variables.tf
+
+      - name: Render terraform docs inside the README.md and push changes back to PR branch
+        uses: terraform-docs/gh-actions@v1.3.0
+        with:
+          config-file: .terraform-docs.yml
+          git-push: true
