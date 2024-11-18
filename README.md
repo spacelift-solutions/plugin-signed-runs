@@ -22,7 +22,7 @@ module "plugin_sops" {
   # Optional Variables
   name     = "plugin-sops"
   space_id = "root"
-}
+} 
 ```
 
 ## Inputs
