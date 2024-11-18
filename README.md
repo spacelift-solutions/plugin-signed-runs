@@ -16,19 +16,95 @@ This module create a Spacelift plugin that signs runs with Spacelift inside GitH
 ## Example
 
 ```hcl
-module "plugin_sops" {
-  source = "spacelift.io/spacelift-solutions/plugin-sops/spacelift"
+terraform {
+  required_providers {
+    spacelift = {
+      source  = "spacelift-io/spacelift"
+      version = ">=1.18.0"
+    }
 
-  # Optional Variables
-  name     = "plugin-sops"
-  space_id = "root"
-} 
+    github = {
+      source  = "integrations/github"
+      version = "~> 6.0"
+    }
+  }
+}
+
+provider "github" {
+  token = "{your_github_token}" # WARNING Sensitive
+}
+
+module "plugin_signed_runs" {
+  source = "spacelift.io/spacelift-solutions/plugin-signed-runs/spacelift"
+
+  spacelift_api_endpoint         = "https://{your_account}.app.spacelift.io"
+  spacelift_api_key_id           = "{your_spacelift_api_key_id}"
+  spacelift_api_key_secret       = "{your_spacelift_api_key_secret}"                # WARNING Sensitive
+  spacelift_run_signature_secret = "my-super-awesome-secret-that-no-one-will-guess" # WARNING Sensitive
+
+  access = {
+    # Keys in this object are stack slugs you
+    # want to allow ONLY signed runs for
+    my-great-stack-slug = {
+      repository = "my-opentofu-monorepo"
+      path       = "my-great-stack/**"
+    }
+
+    my-other-great-stack-slug = {
+      repository = "my-opentofu-monorepo"
+      path       = "my-other-great-stack/**"
+    }
+  }
+}
+
+module "workerpool_apollorion" {
+  source = "github.com/spacelift-io/terraform-aws-spacelift-workerpool-on-ec2?ref=v2.6.2"
+
+  configuration = <<-EOT
+    export SPACELIFT_TOKEN="{your_workerpool_config_token}"
+    export SPACELIFT_POOL_PRIVATE_KEY="{your_workerpool_private_key}"
+
+    # This line is needed in order to pass the initialization policy to the workers
+    ${module.plugin_signed_runs.initialization_policy}
+  EOT
+}
 ```
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_name"></a> [name](#input\_name) | Name of the context | `string` | `"plugin_sops"` | no |
-| <a name="input_space_id"></a> [space\_id](#input\_space\_id) | ID of the space | `string` | `"root"` | no |
+| <a name="input_access"></a> [access](#input\_access) | n/a | <pre>map(object({<br/>    repository          = string<br/>    path                = string<br/>    use_custom_workflow = optional(bool)<br/>  }))</pre> | n/a | yes |
+| <a name="input_name"></a> [name](#input\_name) | Name of the context | `string` | `"plugin_signed_runs"` | no |
+| <a name="input_space"></a> [space](#input\_space) | ID of the space the policy will be created in | `string` | `"root"` | no |
+| <a name="input_spacelift_api_endpoint"></a> [spacelift\_api\_endpoint](#input\_spacelift\_api\_endpoint) | The URL for your Spacelift account (e.g., https://acme.app.spacelift.io/) | `string` | n/a | yes |
+| <a name="input_spacelift_api_key_id"></a> [spacelift\_api\_key\_id](#input\_spacelift\_api\_key\_id) | Spacelift API key ID with admin permissions | `string` | n/a | yes |
+| <a name="input_spacelift_api_key_secret"></a> [spacelift\_api\_key\_secret](#input\_spacelift\_api\_key\_secret) | Spacelift API key secret with admin permissions | `string` | n/a | yes |
+| <a name="input_spacelift_run_signature_secret"></a> [spacelift\_run\_signature\_secret](#input\_spacelift\_run\_signature\_secret) | The secret that will be used to sign the JWT token. It can be any string. | `string` | n/a | yes |
+
+## Outputs
+
+| Name | Description |
+|------|-------------|
+| <a name="output_initialization_policy"></a> [initialization\_policy](#output\_initialization\_policy) | n/a |
+
+## Providers
+
+| Name | Version |
+|------|---------|
+| <a name="provider_github"></a> [github](#provider\_github) | ~> 6.0 |
+| <a name="provider_spacelift"></a> [spacelift](#provider\_spacelift) | >= 0.0.1 |
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [github_actions_secret.api_endpoint](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
+| [github_actions_secret.api_key_id](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
+| [github_actions_secret.api_key_secret](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
+| [github_actions_secret.run_signature_secret](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
+| [github_actions_secret.stack_ids](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/actions_secret) | resource |
+| [github_repository_file.workflow](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_file) | resource |
+| [spacelift_policy.this](https://registry.terraform.io/providers/spacelift-io/spacelift/latest/docs/resources/policy) | resource |
+| [spacelift_policy_attachment.this](https://registry.terraform.io/providers/spacelift-io/spacelift/latest/docs/resources/policy_attachment) | resource |
 <!-- END_TF_DOCS -->

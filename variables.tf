@@ -1,7 +1,21 @@
+variable "access" {
+  type = map(object({
+    repository          = string
+    path                = string
+    use_custom_workflow = optional(bool)
+  }))
+}
+
 variable "name" {
   type        = string
   description = "Name of the context"
   default     = "plugin_signed_runs"
+}
+
+variable "space" {
+  type        = string
+  description = "ID of the space the policy will be created in"
+  default     = "root"
 }
 
 variable "spacelift_api_endpoint" {
@@ -22,18 +36,4 @@ variable "spacelift_api_key_secret" {
 variable "spacelift_run_signature_secret" {
   type        = string
   description = "The secret that will be used to sign the JWT token. It can be any string."
-}
-
-variable "access" {
-  type = map(object({
-    repository          = string
-    path                = string
-    use_custom_workflow = optional(bool)
-  }))
-}
-
-variable "space" {
-  type        = string
-  description = "ID of the space the policy will be created in"
-  default     = "root"
 }
