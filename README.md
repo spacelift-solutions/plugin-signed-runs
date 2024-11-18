@@ -4,6 +4,12 @@ This module create a Spacelift plugin that signs runs with Spacelift inside GitH
 
 ## How it works
 
+The module will create the following resource:
+  - A push policy inside spacelift
+  - Inside every `repository` in the access variable, it will create a new workflow for each stack that will trigger a run in Spacelift with SpaceCTL.
+    - You can also use a custom workflow by setting `use_custom_workflow` to `true` in the access variable.
+  - An output you can use with a worker pool to pass the appropriate initialization policy to the workers.
+
 1. A user pushes a code change to GitHub.
 2. Spacelift is notified but ignores the code change push because of the Push policy.
 3. The GitHub Action is triggered. It builds a JWT token and signs it with your secret. Then, it triggers a run and passes the signed token as metadata.
@@ -11,6 +17,13 @@ This module create a Spacelift plugin that signs runs with Spacelift inside GitH
 5. The private worker pool launcher evaluates the Initialization policy to verify the signature, that the token has not expired and is associated with the stack and commit for the run.
 6. If the token validation succeeds, the launcher starts the worker, and the run gets executed. Otherwise, the worker does not get started, the run is marked as failed, and the reason for the failure is displayed in the Initialization phase logs.
 
+## Access Variable
+
+This variable in the module will control which stacks will be allowed to run signed runs.
+The key in the map is the stack slug, and the value is an object with the following fields:
+  - `repository`: The repository the stack tracks.
+  - `path`: This should be set to the same thing as a stacks `project root`.
+  - `use_custom_workflow`: Optional. If set to `true`, the module will not create a workflow in github for this stack. You will need to create a custom workflow in the repository.
 
 <!-- BEGIN_TF_DOCS -->
 ## Example
