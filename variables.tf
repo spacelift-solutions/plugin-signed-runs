@@ -1,11 +1,3 @@
-variable "access" {
-  type = map(object({
-    repository          = string
-    path                = string
-    use_custom_workflow = optional(bool)
-  }))
-}
-
 variable "name" {
   type        = string
   description = "Name of the context"
@@ -36,4 +28,12 @@ variable "spacelift_api_key_secret" {
 variable "spacelift_run_signature_secret" {
   type        = string
   description = "The secret that will be used to sign the JWT token. It can be any string."
+}
+
+variable "stacks" {
+  type = map(object({
+    stack_id            = string
+    custom_path         = optional(string)
+    use_custom_workflow = optional(bool)
+  }))
 }

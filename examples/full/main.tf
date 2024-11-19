@@ -24,22 +24,24 @@ module "plugin_signed_runs" {
   spacelift_api_key_secret       = "{your_spacelift_api_key_secret}"                # WARNING Sensitive
   spacelift_run_signature_secret = "my-super-awesome-secret-that-no-one-will-guess" # WARNING Sensitive
 
-  access = {
-    # Keys in this object are stack slugs you
-    # want to allow ONLY signed runs for
-    my-great-stack-slug = {
-      repository = "my-opentofu-monorepo"
-      path       = "my-great-stack/**"
+  stacks = {
+    my-great-stack = {
+      stack_id    = "my-awesome-stack-id"
+      custom_path = "my-great-stack/test"
     }
 
-    my-other-great-stack-slug = {
-      repository = "my-opentofu-monorepo"
-      path       = "my-other-great-stack/**"
+    my-second-great-stack = {
+      stack_id            = "my-awesome-second-stack-id"
+      use_custom_workflow = true
+    }
+
+    my-third-great-stack = {
+      stack_id = "my-awesome-third-stack-id"
     }
   }
 }
 
-module "workerpool_apollorion" {
+module "workerpooln" {
   source = "github.com/spacelift-io/terraform-aws-spacelift-workerpool-on-ec2?ref=v2.6.2"
 
   configuration = <<-EOT
