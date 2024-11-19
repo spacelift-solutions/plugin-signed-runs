@@ -74,7 +74,7 @@ resource "github_repository_file" "workflow" {
   repository = data.spacelift_stack.this[each.key].repository
   file       = ".github/workflows/spacelift-signed-run-${trim(replace(replace(data.spacelift_stack.this[each.key].project_root, "*", ""), "/", "_"), "_")}.yaml"
   content = templatefile("${path.module}/workflow.tpl.yaml", {
-    PATH : data.spacelift_stack.this[each.key].project_root
+    PATH : data.spacelift_stack.this[each.key].project_root != "" ? "${data.spacelift_stack.this[each.key].project_root}/**" : "",
     STACK_ID : each.value.stack_id
   })
 }

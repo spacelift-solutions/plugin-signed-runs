@@ -2,8 +2,10 @@ name: "Trigger Spacelift Signed Run: ${PATH}"
 
 on:
   push:
+  %{ if PATH != "" }
     paths:
       - "${PATH}"
+  %{ endif }
 
 env:
   SPACELIFT_API_KEY_ENDPOINT: $${{ secrets.SPACELIFT_API_KEY_ENDPOINT }}
