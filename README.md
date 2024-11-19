@@ -17,12 +17,12 @@ The module will create the following resource:
 5. The private worker pool launcher evaluates the Initialization policy to verify the signature, that the token has not expired and is associated with the stack and commit for the run.
 6. If the token validation succeeds, the launcher starts the worker, and the run gets executed. Otherwise, the worker does not get started, the run is marked as failed, and the reason for the failure is displayed in the Initialization phase logs.
 
-## Access Variable
+## Stacks Variable
 
 This variable in the module will control which stacks will be allowed to run signed runs.
-The key in the map is the stack slug, and the value is an object with the following fields:
-  - `repository`: The repository the stack tracks.
-  - `path`: This should be set to the same thing as a stacks `project root`.
+The key can be anything, its only used statically in for_each loops.
+  - `stack_id`: The stack you want to trigger with signed runs.
+  - `custom_path`: Optional. If you want to trigger the stack using a path other than the stacks project root you can set it here.
   - `use_custom_workflow`: Optional. If set to `true`, the module will not create a workflow in github for this stack. You will need to create a custom workflow in the repository.
 
 <!-- BEGIN_TF_DOCS -->
