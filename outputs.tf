@@ -8,6 +8,7 @@ EOT
 }
 
 output "initialization_policy" {
-  sensitive = true
-  value     = local.init_policy_workerpool_userdata
+  sensitive   = true
+  value       = local.init_policy_workerpool_userdata
+  description = "The initialization policy that must be assigned to the workerpool for this plugin to work."
 }

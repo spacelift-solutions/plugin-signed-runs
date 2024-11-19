@@ -76,7 +76,7 @@ module "plugin_signed_runs" {
   }
 }
 
-module "workerpooln" {
+module "workerpool" {
   source = "github.com/spacelift-io/terraform-aws-spacelift-workerpool-on-ec2?ref=v2.6.2"
 
   configuration = <<-EOT
@@ -99,13 +99,13 @@ module "workerpooln" {
 | <a name="input_spacelift_api_key_id"></a> [spacelift\_api\_key\_id](#input\_spacelift\_api\_key\_id) | Spacelift API key ID with admin permissions | `string` | n/a | yes |
 | <a name="input_spacelift_api_key_secret"></a> [spacelift\_api\_key\_secret](#input\_spacelift\_api\_key\_secret) | Spacelift API key secret with admin permissions | `string` | n/a | yes |
 | <a name="input_spacelift_run_signature_secret"></a> [spacelift\_run\_signature\_secret](#input\_spacelift\_run\_signature\_secret) | The secret that will be used to sign the JWT token. It can be any string. | `string` | n/a | yes |
-| <a name="input_stacks"></a> [stacks](#input\_stacks) | n/a | <pre>map(object({<br/>    stack_id            = string<br/>    custom_path         = optional(string)<br/>    use_custom_workflow = optional(bool)<br/>  }))</pre> | n/a | yes |
+| <a name="input_stacks"></a> [stacks](#input\_stacks) | The stacks that will be triggered and signed via this plugin. | <pre>map(object({<br/>    stack_id            = string<br/>    custom_path         = optional(string)<br/>    use_custom_workflow = optional(bool)<br/>  }))</pre> | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_initialization_policy"></a> [initialization\_policy](#output\_initialization\_policy) | n/a |
+| <a name="output_initialization_policy"></a> [initialization\_policy](#output\_initialization\_policy) | The initialization policy that must be assigned to the workerpool for this plugin to work. |
 
 ## Providers
 
