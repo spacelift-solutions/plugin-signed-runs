@@ -1,8 +1,7 @@
-name: "Trigger Spacelift Signed Run: ${PATH}"
+name: "Trigger Spacelift Signed Run: %{ if PATH != "" }${PATH}%{ else }all%{ endif }"
 
 on:
-  push:
-  %{ if PATH != "" }
+  push%{ if PATH != "" }:
     paths:
       - "${PATH}"
   %{ endif }
