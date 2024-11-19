@@ -6,9 +6,13 @@ This module create a Spacelift plugin that signs runs with Spacelift inside GitH
 
 The module will create the following resource:
   - A push policy inside spacelift
-  - Inside every `repository` in the access variable, it will create a new workflow for each stack that will trigger a run in Spacelift with SpaceCTL.
-    - You can also use a custom workflow by setting `use_custom_workflow` to `true` in the access variable.
   - An output you can use with a worker pool to pass the appropriate initialization policy to the workers.
+    - This initialization policy is written as to not prevent stacks that are not signed from running (stacks not defined in `var.stacks` can still use this workerpool with no issues).
+  - For Every `stack` defined in `var.stacks`:
+    - We will query for the repository defined in the specified `stack_id`, and we will commit a new workflow to that repository that will trigger a run in Spacelift with SpaceCTL.
+      - The workflow will automatically configure the path in the workflow to only trigger based on the project root of the stack.
+        - You can change this path with `custom_path` in the stacks variable.
+      - You can also use a custom workflow by setting `use_custom_workflow` to `true` in the stacks variable.
 
 1. A user pushes a code change to GitHub.
 2. Spacelift is notified but ignores the code change push because of the Push policy.
