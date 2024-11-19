@@ -59,22 +59,24 @@ module "plugin_signed_runs" {
   spacelift_api_key_secret       = "{your_spacelift_api_key_secret}"                # WARNING Sensitive
   spacelift_run_signature_secret = "my-super-awesome-secret-that-no-one-will-guess" # WARNING Sensitive
 
-  access = {
-    # Keys in this object are stack slugs you
-    # want to allow ONLY signed runs for
-    my-great-stack-slug = {
-      repository = "my-opentofu-monorepo"
-      path       = "my-great-stack/**"
+  stacks = {
+    my-great-stack = {
+      stack_id    = "my-awesome-stack-id"
+      custom_path = "my-great-stack/test"
     }
 
-    my-other-great-stack-slug = {
-      repository = "my-opentofu-monorepo"
-      path       = "my-other-great-stack/**"
+    my-second-great-stack = {
+      stack_id            = "my-awesome-second-stack-id"
+      use_custom_workflow = true
+    }
+
+    my-third-great-stack = {
+      stack_id = "my-awesome-third-stack-id"
     }
   }
 }
 
-module "workerpool_apollorion" {
+module "workerpooln" {
   source = "github.com/spacelift-io/terraform-aws-spacelift-workerpool-on-ec2?ref=v2.6.2"
 
   configuration = <<-EOT
@@ -91,13 +93,13 @@ module "workerpool_apollorion" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_access"></a> [access](#input\_access) | n/a | <pre>map(object({<br/>    repository          = string<br/>    path                = string<br/>    use_custom_workflow = optional(bool)<br/>  }))</pre> | n/a | yes |
 | <a name="input_name"></a> [name](#input\_name) | Name of the context | `string` | `"plugin_signed_runs"` | no |
 | <a name="input_space"></a> [space](#input\_space) | ID of the space the policy will be created in | `string` | `"root"` | no |
 | <a name="input_spacelift_api_endpoint"></a> [spacelift\_api\_endpoint](#input\_spacelift\_api\_endpoint) | The URL for your Spacelift account (e.g., https://acme.app.spacelift.io/) | `string` | n/a | yes |
 | <a name="input_spacelift_api_key_id"></a> [spacelift\_api\_key\_id](#input\_spacelift\_api\_key\_id) | Spacelift API key ID with admin permissions | `string` | n/a | yes |
 | <a name="input_spacelift_api_key_secret"></a> [spacelift\_api\_key\_secret](#input\_spacelift\_api\_key\_secret) | Spacelift API key secret with admin permissions | `string` | n/a | yes |
 | <a name="input_spacelift_run_signature_secret"></a> [spacelift\_run\_signature\_secret](#input\_spacelift\_run\_signature\_secret) | The secret that will be used to sign the JWT token. It can be any string. | `string` | n/a | yes |
+| <a name="input_stacks"></a> [stacks](#input\_stacks) | n/a | <pre>map(object({<br/>    stack_id            = string<br/>    custom_path         = optional(string)<br/>    use_custom_workflow = optional(bool)<br/>  }))</pre> | n/a | yes |
 
 ## Outputs
 
@@ -124,4 +126,5 @@ module "workerpool_apollorion" {
 | [github_repository_file.workflow](https://registry.terraform.io/providers/integrations/github/latest/docs/resources/repository_file) | resource |
 | [spacelift_policy.this](https://registry.terraform.io/providers/spacelift-io/spacelift/latest/docs/resources/policy) | resource |
 | [spacelift_policy_attachment.this](https://registry.terraform.io/providers/spacelift-io/spacelift/latest/docs/resources/policy_attachment) | resource |
+| [spacelift_stack.this](https://registry.terraform.io/providers/spacelift-io/spacelift/latest/docs/data-sources/stack) | data source |
 <!-- END_TF_DOCS -->
