@@ -1,6 +1,7 @@
 variable "stacks" {
   type = map(object({
     stack_id            = string
+    custom_path         = optional(string)
     use_custom_workflow = optional(bool)
   }))
 }

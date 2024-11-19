@@ -2,6 +2,7 @@ locals {
   stacks = {
     for k, v in var.stacks : k => {
       stack_id            = v.stack_id
+      custom_path         = v.custom_path != null ? v.custom_path : false
       use_custom_workflow = v.use_custom_workflow != null ? v.use_custom_workflow : false
     }
   }
@@ -74,7 +75,7 @@ resource "github_repository_file" "workflow" {
   repository = data.spacelift_stack.this[each.key].repository
   file       = ".github/workflows/spacelift-signed-run-${trim(replace(replace(data.spacelift_stack.this[each.key].project_root, "*", ""), "/", "_"), "_")}.yaml"
   content = templatefile("${path.module}/workflow.tpl.yaml", {
-    PATH : data.spacelift_stack.this[each.key].project_root != "" ? "${data.spacelift_stack.this[each.key].project_root}/**" : "",
+    PATH : each.value.custom_path != false ? each.value.custom_path : data.spacelift_stack.this[each.key].project_root,
     STACK_ID : each.value.stack_id
   })
 }

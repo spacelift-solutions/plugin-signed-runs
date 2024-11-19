@@ -3,7 +3,7 @@ name: "Trigger Spacelift Signed Run: %{ if PATH != "" }${PATH}%{ else }all%{ end
 on:
   push%{ if PATH != "" }:
     paths:
-      - "${PATH}"
+      - "${PATH}/**"
   %{ endif }
 
 env:
