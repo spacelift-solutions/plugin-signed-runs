@@ -1,7 +1,6 @@
-variable "access" {
+variable "stacks" {
   type = map(object({
-    repository          = string
-    path                = string
+    stack_id            = string
     use_custom_workflow = optional(bool)
   }))
 }
