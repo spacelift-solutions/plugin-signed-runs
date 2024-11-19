@@ -76,7 +76,7 @@ module "plugin_signed_runs" {
   }
 }
 
-module "workerpooln" {
+module "workerpool" {
   source = "github.com/spacelift-io/terraform-aws-spacelift-workerpool-on-ec2?ref=v2.6.2"
 
   configuration = <<-EOT
