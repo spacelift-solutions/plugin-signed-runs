@@ -75,7 +75,7 @@ resource "github_repository_file" "workflow" {
   for_each = { for k, v in local.stacks : k => v if v.use_custom_workflow == false }
 
   repository = data.spacelift_stack.this[each.key].repository
-  file       = ".github/workflows/spacelift-signed-run-${trim(replace(replace(each.value.stack_id, "*", ""), "/", "_"), "_")}-${trim(replace(replace(each.value.path, "*", ""), "/", "_"), "_")}.yaml"
+  file       = ".github/workflows/spacelift_signed_run_${trim(replace(replace(each.value.stack_id, "*", ""), "/", "_"), "_")}${trim(replace(replace(each.value.path, "*", ""), "/", "_"), "_")}.yaml"
   content = templatefile("${path.module}/workflow.tpl.yaml", {
     PATH : each.value.path,
     STACK_ID : each.value.stack_id
