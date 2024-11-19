@@ -99,7 +99,7 @@ module "workerpool" {
 | <a name="input_spacelift_api_key_id"></a> [spacelift\_api\_key\_id](#input\_spacelift\_api\_key\_id) | Spacelift API key ID with admin permissions | `string` | n/a | yes |
 | <a name="input_spacelift_api_key_secret"></a> [spacelift\_api\_key\_secret](#input\_spacelift\_api\_key\_secret) | Spacelift API key secret with admin permissions | `string` | n/a | yes |
 | <a name="input_spacelift_run_signature_secret"></a> [spacelift\_run\_signature\_secret](#input\_spacelift\_run\_signature\_secret) | The secret that will be used to sign the JWT token. It can be any string. | `string` | n/a | yes |
-| <a name="input_stacks"></a> [stacks](#input\_stacks) | n/a | <pre>map(object({<br/>    stack_id            = string<br/>    custom_path         = optional(string)<br/>    use_custom_workflow = optional(bool)<br/>  }))</pre> | n/a | yes |
+| <a name="input_stacks"></a> [stacks](#input\_stacks) | The stacks that will be triggered and signed via this plugin. | <pre>map(object({<br/>    stack_id            = string<br/>    custom_path         = optional(string)<br/>    use_custom_workflow = optional(bool)<br/>  }))</pre> | n/a | yes |
 
 ## Outputs
 
