@@ -105,7 +105,7 @@ module "workerpool" {
 
 | Name | Description |
 |------|-------------|
-| <a name="output_initialization_policy"></a> [initialization\_policy](#output\_initialization\_policy) | n/a |
+| <a name="output_initialization_policy"></a> [initialization\_policy](#output\_initialization\_policy) | The initialization policy that must be assigned to the workerpool for this plugin to work. |
 
 ## Providers
 
