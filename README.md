@@ -1,6 +1,6 @@
 # Plugin Signed Runs
 
-This module create a Spacelift plugin that signs runs with Spacelift inside GitHub.
+This module will create a Spacelift plugin that signs runs for Spacelift inside GitHub.
 
 ## How it works
 
