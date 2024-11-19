@@ -9,7 +9,9 @@ locals {
 }
 
 data "spacelift_stack" "this" {
-  for_each = local.stacks
+  # use var.stacks here instead of local.stacks to avoid circular dependency
+  # the keys are the same so it will work the same.
+  for_each = var.stacks
 
   stack_id = each.value.stack_id
 }
