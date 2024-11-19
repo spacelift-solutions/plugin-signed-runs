@@ -36,4 +36,5 @@ variable "stacks" {
     custom_path         = optional(string)
     use_custom_workflow = optional(bool)
   }))
+  description = "The stacks that will be triggered and signed via this plugin."
 }
